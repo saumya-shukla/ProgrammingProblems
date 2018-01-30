@@ -5,7 +5,7 @@ package org.saumya.list;
  *
  * @author Shukla, Saumya
  */
-public class LinkedList implements List {
+public class LinkedList<T> implements List<T> {
 
     private Node first;
     private int n;
@@ -13,6 +13,13 @@ public class LinkedList implements List {
     public LinkedList() {
         this.first = null;
         this.n = 0;
+    }
+
+    public LinkedList(T... elements) {
+        this();
+        for (T element : elements) {
+            insertEnd(element);
+        }
     }
 
     @Override
@@ -26,7 +33,7 @@ public class LinkedList implements List {
     }
 
     @Override
-    public void insertFirst(int element) {
+    public void insertFirst(T element) {
         Node oldFirst = first;
         first = new Node();
         first.value = element;
@@ -35,7 +42,7 @@ public class LinkedList implements List {
     }
 
     @Override
-    public void insertEnd(int element) {
+    public void insertEnd(T element) {
         Node newNode = new Node(element, null);
         newNode.next = null;
 
@@ -52,7 +59,7 @@ public class LinkedList implements List {
     }
 
     @Override
-    public void insertAtIndex(int element, int index) {
+    public void insertAtIndex(T element, int index) {
         if (index > n) {
             throw new IllegalArgumentException("List size is " + size() + ", could not insert at index: " + index);
         }
@@ -70,7 +77,7 @@ public class LinkedList implements List {
         n++;
     }
 
-    private void insertAfterNode(Node previous, int element) {
+    private void insertAfterNode(Node previous, T element) {
         if (previous == null) {
             throw new IllegalArgumentException("Previous node cannot be null");
         } else {
@@ -78,14 +85,15 @@ public class LinkedList implements List {
             newNode.next = previous.next;
             previous.next = newNode;
         }
+        n++;
     }
 
     @Override
-    public int indexOf(int element) {
+    public int indexOf(T element) {
         Node temp = first;
         int index = 0;
         while (temp != null) {
-            if (temp.value == element) {
+            if (temp.value.equals(element)) {
                 return index;
             } else {
                 temp = temp.next;
@@ -116,31 +124,92 @@ public class LinkedList implements List {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder("[");
         Node temp = first;
         while (temp != null) {
-            sb.append(" " + temp.value);
+            sb.append(temp.value);
+            if (temp.next != null) {
+                sb.append(",");
+            }
             temp = temp.next;
         }
-        sb.append("}");
+        sb.append("]");
         return sb.toString();
     }
 
     private class Node {
-        private Integer value;
+        private T value;
         private Node next;
 
         public Node() {
         }
 
-        public Node(Integer value, Node next) {
+        public Node(T value, Node next) {
             this.value = value;
             this.next = next;
         }
     }
 
+    public void reverse() {
+        Node prev = null;
+        Node current = first;
+        Node next = null;
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        first = prev;
+    }
+
+    @Override
+    public List<T> intersect(List<T> list2) {
+        List result = new LinkedList();
+        for (int i = 0; i < list2.size(); i++) {
+            T x = list2.get(i);
+            if (this.indexOf(x) != -1) {
+                result.insertEnd(x);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public T get(int index) {
+        if (index > n) {
+            throw new IllegalArgumentException("Index " + index + " is greater than the size of the list");
+        }
+
+        Node current = first;
+        int count = 0;
+        while (current != null) {
+            if (count == index) {
+                return current.value;
+            }
+            count++;
+            current = current.next;
+        }
+        return null;
+    }
+
+    @Override
+    public int detectLoop() {
+        Node n1 = first, n2 = first;
+        while (n1 != null && n2 != null && n2.next != null) {
+            n1 = n1.next;
+            n2 = n2.next.next;
+            if (n1 == n2) {
+                System.out.println("Found loop");
+                return 1;
+            }
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
-        List list = new LinkedList();
+        List<Integer> list = new LinkedList<Integer>();
+        List<Integer> list2 = new LinkedList<Integer>();
         System.out.println("Initial size: " + list.size());
 
         list.insertEnd(10);
@@ -160,5 +229,22 @@ public class LinkedList implements List {
         list.delete(1);
         System.out.println("After deleting element at index 1: " + list.toString());
         System.out.println("Size of list: " + list.size());
+
+        list.reverse();
+        System.out.println("Reversed linked list :" + list.toString());
+
+        if (list.detectLoop() == 0) {
+            System.out.println("No loop found");
+        } else {
+            System.out.println("Loop exists!!");
+        }
+        list2.insertEnd(20);
+        list2.insertEnd(1);
+        list2.insertEnd(5);
+        list2.insertEnd(3);
+        list2.insertEnd(2);
+        System.out.println(" " + list2.toString());
+        List result = list.intersect(list2);
+        System.out.println(" Intersected nodes " + result.toString());
     }
 }

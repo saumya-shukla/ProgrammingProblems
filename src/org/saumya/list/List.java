@@ -5,19 +5,27 @@ package org.saumya.list;
  *
  * @author Shukla, Saumya
  */
-public interface List {
+public interface List<T> {
 
     boolean isEmpty();
 
     int size();
 
-    void insertFirst(int element);
+    void insertFirst(T element);
 
-    void insertEnd(int element);
+    void insertEnd(T element);
 
-    void insertAtIndex(int element, int index);
+    void insertAtIndex(T element, int index);
 
-    int indexOf(int element);
+    int indexOf(T element);
 
     void delete(int index);
+
+    void reverse();
+
+    T get(int index);
+
+    int detectLoop();
+
+    List<T> intersect(List<T> second);
 }
