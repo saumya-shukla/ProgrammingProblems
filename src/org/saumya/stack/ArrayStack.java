@@ -1,4 +1,4 @@
-package org.saumya.Stack;
+package org.saumya.stack;
 
 
 /**
