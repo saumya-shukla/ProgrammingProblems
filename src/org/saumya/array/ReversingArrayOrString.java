@@ -23,7 +23,7 @@ public class ReversingArrayOrString {
         int arr[] = {1, 2, 3, 4, 5, 6};
         System.out.println("Array before reversing :" + Arrays.toString(arr));
         reverseArray(arr, 0, arr.length - 1);
-        System.out.println("Ärray after revrsing :" + Arrays.toString(arr));
+        System.out.println("Ärray after reversing :" + Arrays.toString(arr));
 
     }
 }
